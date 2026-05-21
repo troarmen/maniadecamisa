@@ -85,7 +85,7 @@ begin
     (new.id, 'Renda pessoal',              'personal', 'income',  '#16A34A'),
     -- Pessoal - Saidas
     (new.id, 'Aluguel',                    'personal', 'expense', '#EF4444'),
-    (new.id, 'Convenio / Saude',           'personal', 'expense', '#14B8A6'),
+    (new.id, 'Convênio / Saúde',           'personal', 'expense', '#14B8A6'),
     (new.id, 'Contas fixas',               'personal', 'expense', '#F59E0B'),
     (new.id, 'Outros gastos pessoais',     'personal', 'expense', '#64748B');
   return new;

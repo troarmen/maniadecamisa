@@ -27,7 +27,7 @@ export default function SummaryCards({
       ? 'Lucro da loja'
       : scope === 'personal'
         ? 'Saldo pessoal'
-        : 'Resultado do mes';
+        : 'Resultado do mês';
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -40,19 +40,19 @@ export default function SummaryCards({
         <p className="mt-2 text-2xl font-extrabold text-emerald-600">
           {formatBRL(income)}
         </p>
-        <p className="mt-1 text-xs text-slate-400">Faturamento do periodo</p>
+        <p className="mt-1 text-xs text-slate-400">Faturamento do período</p>
       </div>
 
-      {/* Saidas */}
+      {/* Saídas */}
       <div className="card p-5">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-slate-500">Saidas</span>
+          <span className="text-sm font-medium text-slate-500">Saídas</span>
           <ArrowDownCircle className="h-5 w-5 text-red-500" />
         </div>
         <p className="mt-2 text-2xl font-extrabold text-red-600">
           {formatBRL(expense)}
         </p>
-        <p className="mt-1 text-xs text-slate-400">Custos e gastos do periodo</p>
+        <p className="mt-1 text-xs text-slate-400">Custos e gastos do período</p>
       </div>
 
       {/* Resultado */}
@@ -80,7 +80,9 @@ export default function SummaryCards({
           {formatBRL(result)}
         </p>
         <p className="mt-1 text-xs text-slate-400">
-          {positive ? 'No azul — entradas maiores' : 'No vermelho — atencao aos gastos'}
+          {positive
+            ? 'No azul — entradas maiores'
+            : 'No vermelho — atenção aos gastos'}
         </p>
       </div>
     </div>

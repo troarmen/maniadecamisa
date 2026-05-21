@@ -36,7 +36,7 @@ export default function TrendChart({
   const [chartType, setChartType] = useState<ChartType>('bar');
 
   const data = useMemo(() => {
-    // Cria os baldes dos ultimos 6 meses ate o mes selecionado.
+    // Cria os baldes dos últimos 6 meses até o mês selecionado.
     const buckets = new Map<
       string,
       { mes: string; Entradas: number; Saidas: number }
@@ -69,9 +69,9 @@ export default function TrendChart({
     <div className="card p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="font-bold text-slate-800">Evolucao dos ultimos meses</h3>
+          <h3 className="font-bold text-slate-800">Evolução dos últimos meses</h3>
           <p className="text-xs text-slate-400">
-            Entradas x saidas {scope === 'store' && '· apenas loja'}
+            Entradas x saídas {scope === 'store' && '· apenas loja'}
             {scope === 'personal' && '· apenas pessoal'}
           </p>
         </div>
@@ -90,7 +90,7 @@ export default function TrendChart({
 
       {!hasData ? (
         <p className="py-12 text-center text-sm text-slate-400">
-          Ainda nao ha lancamentos suficientes para mostrar a evolucao.
+          Ainda não há lançamentos suficientes para mostrar a evolução.
         </p>
       ) : (
         <div className="mt-4">
@@ -120,8 +120,18 @@ export default function TrendChart({
                   iconType="circle"
                   wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
                 />
-                <Bar dataKey="Entradas" fill="#16A34A" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="Saidas" fill="#EF4444" radius={[6, 6, 0, 0]} />
+                <Bar
+                  dataKey="Entradas"
+                  name="Entradas"
+                  fill="#16A34A"
+                  radius={[6, 6, 0, 0]}
+                />
+                <Bar
+                  dataKey="Saidas"
+                  name="Saídas"
+                  fill="#EF4444"
+                  radius={[6, 6, 0, 0]}
+                />
               </BarChart>
             ) : (
               <LineChart data={data} margin={{ left: 4, right: 8 }}>
@@ -150,6 +160,7 @@ export default function TrendChart({
                 <Line
                   type="monotone"
                   dataKey="Entradas"
+                  name="Entradas"
                   stroke="#16A34A"
                   strokeWidth={3}
                   dot={{ r: 3 }}
@@ -157,6 +168,7 @@ export default function TrendChart({
                 <Line
                   type="monotone"
                   dataKey="Saidas"
+                  name="Saídas"
                   stroke="#EF4444"
                   strokeWidth={3}
                   dot={{ r: 3 }}

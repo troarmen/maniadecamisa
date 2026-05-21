@@ -61,15 +61,15 @@ export default function CategoryChart({
         <div>
           <h3 className="font-bold text-slate-800">Por categoria</h3>
           <p className="text-xs text-slate-400">
-            {kind === 'expense' ? 'Saidas' : 'Entradas'} do mes ·{' '}
+            {kind === 'expense' ? 'Saídas' : 'Entradas'} do mês ·{' '}
             {formatBRL(total)}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* Entradas x Saidas */}
+          {/* Entradas x Saídas */}
           <div className="flex rounded-lg bg-slate-100 p-0.5">
             <Toggle active={kind === 'expense'} onClick={() => setKind('expense')}>
-              Saidas
+              Saídas
             </Toggle>
             <Toggle active={kind === 'income'} onClick={() => setKind('income')}>
               Entradas
@@ -80,14 +80,14 @@ export default function CategoryChart({
             <Toggle
               active={chartType === 'pie'}
               onClick={() => setChartType('pie')}
-              title="Grafico de pizza"
+              title="Gráfico de pizza"
             >
               <PieIcon className="h-4 w-4" />
             </Toggle>
             <Toggle
               active={chartType === 'bar'}
               onClick={() => setChartType('bar')}
-              title="Grafico de barras"
+              title="Gráfico de barras"
             >
               <BarChart3 className="h-4 w-4" />
             </Toggle>
@@ -223,7 +223,7 @@ function EmptyChart({ kind }: { kind: Kind }) {
     <div className="flex flex-1 flex-col items-center justify-center gap-2 py-12 text-center">
       <Inbox className="h-8 w-8 text-slate-300" />
       <p className="text-sm text-slate-400">
-        Nenhuma {kind === 'expense' ? 'saida' : 'entrada'} neste mes.
+        Nenhuma {kind === 'expense' ? 'saída' : 'entrada'} neste mês.
       </p>
     </div>
   );

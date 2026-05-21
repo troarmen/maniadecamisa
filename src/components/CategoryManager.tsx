@@ -31,7 +31,7 @@ const SCOPE_LABEL: Record<Scope, string> = {
 };
 const KIND_LABEL: Record<Kind, string> = {
   income: 'Entradas',
-  expense: 'Saidas',
+  expense: 'Saídas',
 };
 
 export default function CategoryManager({
@@ -86,7 +86,7 @@ export default function CategoryManager({
       resetForm();
       onChanged();
     } catch {
-      setError('Nao foi possivel salvar a categoria.');
+      setError('Não foi possível salvar a categoria.');
     } finally {
       setSaving(false);
     }
@@ -95,8 +95,8 @@ export default function CategoryManager({
   async function handleDelete(cat: Category) {
     if (
       !window.confirm(
-        `Excluir a categoria "${cat.name}"? Isso so e possivel se nao houver ` +
-          `lancamentos nela.`,
+        `Excluir a categoria "${cat.name}"? Isso só é possível se não houver ` +
+          `lançamentos nela.`,
       )
     ) {
       return;
@@ -108,7 +108,7 @@ export default function CategoryManager({
       onChanged();
     } catch {
       setError(
-        `Nao foi possivel excluir "${cat.name}": existem lancamentos usando ` +
+        `Não foi possível excluir "${cat.name}": existem lançamentos usando ` +
           `esta categoria.`,
       );
     }
@@ -119,10 +119,10 @@ export default function CategoryManager({
       open={open}
       onClose={onClose}
       title="Categorias"
-      subtitle="Crie e organize as categorias de entradas e saidas."
+      subtitle="Crie e organize as categorias de entradas e saídas."
       size="lg"
     >
-      {/* Formulario de criar/editar */}
+      {/* Formulário de criar/editar */}
       <form
         onSubmit={handleSubmit}
         className="rounded-xl border border-slate-200 p-4"
@@ -166,7 +166,7 @@ export default function CategoryManager({
               onChange={(e) => setKind(e.target.value as Kind)}
               className="input-field"
             >
-              <option value="expense">Saida</option>
+              <option value="expense">Saída</option>
               <option value="income">Entrada</option>
             </select>
           </div>

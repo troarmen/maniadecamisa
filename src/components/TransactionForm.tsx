@@ -42,7 +42,7 @@ export default function TransactionForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
-  // Inicializa o formulario sempre que ele e aberto.
+  // Inicializa o formulário sempre que ele é aberto.
   useEffect(() => {
     if (!open) return;
     setError('');
@@ -124,7 +124,7 @@ export default function TransactionForm({
       onSaved();
       onClose();
     } catch {
-      setError('Nao foi possivel salvar. Tente novamente.');
+      setError('Não foi possível salvar. Tente novamente.');
     } finally {
       setSaving(false);
     }
@@ -134,11 +134,11 @@ export default function TransactionForm({
     <Modal
       open={open}
       onClose={onClose}
-      title={editing ? 'Editar lancamento' : 'Novo lancamento'}
-      subtitle="Registre uma entrada (venda) ou uma saida (gasto)."
+      title={editing ? 'Editar lançamento' : 'Novo lançamento'}
+      subtitle="Registre uma entrada (venda) ou uma saída (gasto)."
     >
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Ambito: Loja x Pessoal */}
+        {/* Âmbito: Loja x Pessoal */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">
             Onde se aplica?
@@ -161,7 +161,7 @@ export default function TransactionForm({
           </div>
         </div>
 
-        {/* Tipo: Entrada x Saida */}
+        {/* Tipo: Entrada x Saída */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">
             Tipo
@@ -179,7 +179,7 @@ export default function TransactionForm({
               onClick={() => changeKind('expense')}
               activeClass="border-red-500 bg-red-50 text-red-700"
             >
-              <ArrowDown className="h-4 w-4" /> Saida
+              <ArrowDown className="h-4 w-4" /> Saída
             </ChoiceButton>
           </div>
         </div>
@@ -193,8 +193,8 @@ export default function TransactionForm({
             <p className="flex items-start gap-2 rounded-xl bg-amber-50 px-3 py-2.5 text-sm text-amber-700">
               <Info className="mt-0.5 h-4 w-4 shrink-0" />
               Nenhuma categoria de{' '}
-              {kind === 'income' ? 'entrada' : 'saida'} para{' '}
-              {scope === 'store' ? 'a loja' : 'o pessoal'}. Crie uma no botao
+              {kind === 'income' ? 'entrada' : 'saída'} para{' '}
+              {scope === 'store' ? 'a loja' : 'o pessoal'}. Crie uma no botão
               "Categorias" do painel.
             </p>
           ) : (
@@ -213,10 +213,10 @@ export default function TransactionForm({
           )}
         </div>
 
-        {/* Descricao / Item */}
+        {/* Descrição / Item */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">
-            Item / descricao
+            Item / descrição
           </label>
           <input
             type="text"
@@ -260,16 +260,16 @@ export default function TransactionForm({
           </div>
         </div>
 
-        {/* Observacao */}
+        {/* Observação */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">
-            Observacao <span className="text-slate-400">(opcional)</span>
+            Observação <span className="text-slate-400">(opcional)</span>
           </label>
           <input
             type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Alguma anotacao sobre este lancamento"
+            placeholder="Alguma anotação sobre este lançamento"
             className="input-field"
           />
         </div>
@@ -284,11 +284,11 @@ export default function TransactionForm({
           />
           <span className="text-sm">
             <span className="font-medium text-slate-700">
-              Este e um custo fixo
+              Este é um custo fixo
             </span>
             <span className="block text-xs text-slate-400">
-              Aluguel, internet, convenio... Permite repetir rapidamente todo
-              mes.
+              Aluguel, internet, convênio... Permite repetir rapidamente todo
+              mês.
             </span>
           </span>
         </label>
@@ -305,7 +305,7 @@ export default function TransactionForm({
           </button>
           <button type="submit" disabled={saving} className="btn-primary">
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-            {editing ? 'Salvar alteracoes' : 'Adicionar lancamento'}
+            {editing ? 'Salvar alterações' : 'Adicionar lançamento'}
           </button>
         </div>
       </form>

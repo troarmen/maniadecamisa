@@ -32,14 +32,14 @@ export default function TransactionList({
     <div className="card overflow-hidden">
       <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
         <div>
-          <h3 className="font-bold text-slate-800">Lancamentos do mes</h3>
+          <h3 className="font-bold text-slate-800">Lançamentos do mês</h3>
           <p className="text-xs text-slate-400">
             {sorted.length} {sorted.length === 1 ? 'registro' : 'registros'}
           </p>
         </div>
         <button type="button" onClick={onAdd} className="btn-primary">
           <Plus className="h-4 w-4" />
-          Novo lancamento
+          Novo lançamento
         </button>
       </div>
 
@@ -50,7 +50,7 @@ export default function TransactionList({
           </div>
           <div>
             <p className="font-semibold text-slate-700">
-              Nenhum lancamento neste mes
+              Nenhum lançamento neste mês
             </p>
             <p className="text-sm text-slate-400">
               Comece registrando uma venda ou um gasto.
@@ -77,7 +77,7 @@ export default function TransactionList({
                   style={{ backgroundColor: cat?.color ?? '#cbd5e1' }}
                 />
 
-                {/* Descricao e categoria */}
+                {/* Descrição e categoria */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <p className="truncate font-semibold text-slate-800">
@@ -110,7 +110,7 @@ export default function TransactionList({
                   {isIncome ? '+' : '-'} {formatBRL(Number(t.amount))}
                 </span>
 
-                {/* Acoes */}
+                {/* Ações */}
                 <div className="flex shrink-0 items-center gap-1">
                   <button
                     type="button"

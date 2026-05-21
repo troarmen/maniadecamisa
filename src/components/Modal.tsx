@@ -7,7 +7,7 @@ interface ModalProps {
   subtitle?: string;
   onClose: () => void;
   children: ReactNode;
-  /** Largura maxima do conteudo. */
+  /** Largura máxima do conteúdo. */
   size?: 'md' | 'lg';
 }
 

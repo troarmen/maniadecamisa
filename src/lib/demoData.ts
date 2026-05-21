@@ -1,5 +1,9 @@
-// Dados ficticios usados no "modo demonstracao" — permitem conhecer a
-// plataforma sem precisar configurar o Supabase. Nada aqui e salvo.
+// Dados fictícios usados no "modo demonstração" — permitem conhecer a
+// plataforma sem precisar configurar o Supabase. Nada aqui é salvo.
+//
+// A loja abriu em janeiro/2026 no vermelho; as vendas sobem mês a mês
+// e os custos vão se estabilizando — histórico real o suficiente para
+// o gráfico de ponto de equilíbrio projetar a tendência.
 
 import type { Category, Transaction } from '../types';
 
@@ -33,7 +37,7 @@ export const demoCategories: Category[] = [
   c('cat-outros-loja', 'Outros gastos da loja', 'store', 'expense', '#64748B'),
   c('cat-renda', 'Renda pessoal', 'personal', 'income', '#16A34A'),
   c('cat-aluguel', 'Aluguel', 'personal', 'expense', '#EF4444'),
-  c('cat-convenio', 'Convenio / Saude', 'personal', 'expense', '#14B8A6'),
+  c('cat-convenio', 'Convênio / Saúde', 'personal', 'expense', '#14B8A6'),
   c('cat-contas', 'Contas fixas', 'personal', 'expense', '#F59E0B'),
   c('cat-outros-pessoal', 'Outros gastos pessoais', 'personal', 'expense', '#64748B'),
 ];
@@ -62,50 +66,103 @@ function t(
 }
 
 export const demoTransactions: Transaction[] = [
-  // ===================== Marco / 2026 =====================
-  t('cat-vendas', 'Camisa Brasil 1994', 380, '2026-03-05'),
-  t('cat-vendas', 'Camisa Flamengo 1981', 450, '2026-03-12'),
-  t('cat-vendas', 'Camisa Selecao 1970', 520, '2026-03-20'),
-  t('cat-vendas', 'Camisa Corinthians 1990', 250, '2026-03-27'),
-  t('cat-lotes', 'Lote de 12 camisas anos 80/90', 1800, '2026-03-02'),
-  t('cat-embalagem', 'Embalagens e plastico bolha', 140, '2026-03-06'),
+  // ===================== Janeiro / 2026 =====================
+  // Loja: entradas R$ 1.480 · saídas R$ 3.620
+  t('cat-vendas', 'Camisa Brasil 1994', 380, '2026-01-09'),
+  t('cat-vendas', 'Camisa Corinthians 1990', 240, '2026-01-14'),
+  t('cat-vendas', 'Camisa Palmeiras anos 90', 210, '2026-01-19'),
+  t('cat-vendas', 'Camisa Vasco 1989 Centenário', 280, '2026-01-23'),
+  t('cat-vendas', 'Camisa São Paulo retrô', 370, '2026-01-28'),
+  t('cat-lotes', 'Lote inicial - 20 camisas anos 80/90', 2400, '2026-01-04'),
+  t('cat-embalagem', 'Embalagens e plástico bolha', 180, '2026-01-06'),
+  t('cat-internet', 'Mensalidade internet da loja', 120, '2026-01-10', true),
+  t('cat-reinvest', 'Criação da loja online', 520, '2026-01-12'),
+  t('cat-outros-loja', 'Etiquetas e organização do estoque', 250, '2026-01-08'),
+  t('cat-outros-loja', 'Frete e correios', 150, '2026-01-16'),
+  // Pessoal
+  t('cat-aluguel', 'Aluguel da loja', 1250, '2026-01-05', true),
+  t('cat-convenio', 'Plano de saúde', 460, '2026-01-08', true),
+  t('cat-contas', 'Luz e água', 300, '2026-01-12', true),
+  t('cat-outros-pessoal', 'Compras de mercado', 560, '2026-01-15'),
+
+  // ===================== Fevereiro / 2026 =====================
+  // Loja: entradas R$ 1.840 · saídas R$ 3.520
+  t('cat-vendas', 'Camisa Flamengo 1981', 450, '2026-02-06'),
+  t('cat-vendas', 'Camisa Grêmio 1983 Mundial', 320, '2026-02-11'),
+  t('cat-vendas', 'Camisa Santos retrô', 230, '2026-02-17'),
+  t('cat-vendas', 'Camisa Atlético-MG anos 90', 260, '2026-02-22'),
+  t('cat-vendas', 'Camisa Cruzeiro 1976', 360, '2026-02-26'),
+  t('cat-outras-loja', 'Venda de pôster antigo', 220, '2026-02-14'),
+  t('cat-lotes', 'Lote de 14 camisas europeias', 2200, '2026-02-03'),
+  t('cat-embalagem', 'Embalagens', 160, '2026-02-07'),
+  t('cat-internet', 'Mensalidade internet da loja', 120, '2026-02-10', true),
+  t('cat-reinvest', 'Anúncios no Instagram', 480, '2026-02-15'),
+  t('cat-outros-loja', 'Manutenção do site', 420, '2026-02-18'),
+  t('cat-outros-loja', 'Frete dos envios', 140, '2026-02-20'),
+  // Pessoal
+  t('cat-aluguel', 'Aluguel da loja', 1250, '2026-02-05', true),
+  t('cat-convenio', 'Plano de saúde', 460, '2026-02-08', true),
+  t('cat-contas', 'Luz e água', 285, '2026-02-12', true),
+  t('cat-outros-pessoal', 'Mercado e farmácia', 520, '2026-02-15'),
+
+  // ===================== Março / 2026 =====================
+  // Loja: entradas R$ 2.060 · saídas R$ 3.510
+  t('cat-vendas', 'Camisa Brasil 1970 Pelé', 620, '2026-03-05'),
+  t('cat-vendas', 'Camisa Internacional 1979', 290, '2026-03-10'),
+  t('cat-vendas', 'Camisa Bahia 1988', 240, '2026-03-14'),
+  t('cat-vendas', 'Camisa Fluminense retrô', 310, '2026-03-19'),
+  t('cat-vendas', 'Camisa Botafogo anos 90', 280, '2026-03-24'),
+  t('cat-vendas', 'Camisa Coritiba 1985', 200, '2026-03-28'),
+  t('cat-outras-loja', 'Venda de revista antiga', 120, '2026-03-16'),
+  t('cat-lotes', 'Lote de 16 camisas anos 90', 2300, '2026-03-02'),
+  t('cat-embalagem', 'Embalagens e plástico bolha', 150, '2026-03-06'),
   t('cat-internet', 'Mensalidade internet da loja', 120, '2026-03-10', true),
-  t('cat-reinvest', 'Anuncios no Instagram', 200, '2026-03-18'),
-  t('cat-outros-loja', 'Frete dos envios', 110, '2026-03-22'),
+  t('cat-reinvest', 'Tráfego pago', 420, '2026-03-18'),
+  t('cat-outros-loja', 'Cabides e organização', 390, '2026-03-12'),
+  t('cat-outros-loja', 'Frete dos envios', 130, '2026-03-22'),
+  // Pessoal
   t('cat-aluguel', 'Aluguel da loja', 1250, '2026-03-05', true),
-  t('cat-convenio', 'Plano de saude', 460, '2026-03-08', true),
-  t('cat-contas', 'Luz e agua', 305, '2026-03-12', true),
+  t('cat-convenio', 'Plano de saúde', 460, '2026-03-08', true),
+  t('cat-contas', 'Luz e água', 305, '2026-03-12', true),
   t('cat-outros-pessoal', 'Compras de mercado', 540, '2026-03-15'),
 
   // ===================== Abril / 2026 =====================
-  t('cat-vendas', 'Camisa Argentina 1986', 600, '2026-04-04'),
-  t('cat-vendas', 'Camisa Brasil 1982', 540, '2026-04-11'),
-  t('cat-vendas', 'Camisa Santos retro', 240, '2026-04-18'),
-  t('cat-vendas', 'Camisa Real Madrid anos 90', 360, '2026-04-26'),
-  t('cat-outras-loja', 'Venda de revista antiga', 120, '2026-04-22'),
-  t('cat-lotes', 'Lote de 8 camisas europeias', 1500, '2026-04-05'),
-  t('cat-embalagem', 'Embalagens', 160, '2026-04-07'),
+  // Loja: entradas R$ 2.390 · saídas R$ 3.430
+  t('cat-vendas', 'Camisa Argentina 1986 Maradona', 600, '2026-04-04'),
+  t('cat-vendas', 'Camisa Holanda 1974 Cruyff', 480, '2026-04-10'),
+  t('cat-vendas', 'Camisa Itália 1982', 420, '2026-04-16'),
+  t('cat-vendas', 'Camisa Milan 1989 Van Basten', 380, '2026-04-22'),
+  t('cat-vendas', 'Camisa Real Madrid anos 90', 350, '2026-04-27'),
+  t('cat-outras-loja', 'Venda de chuteira antiga', 160, '2026-04-19'),
+  t('cat-lotes', 'Lote de 12 camisas de seleções', 2150, '2026-04-05'),
+  t('cat-embalagem', 'Embalagens', 170, '2026-04-07'),
   t('cat-internet', 'Mensalidade internet da loja', 120, '2026-04-10', true),
-  t('cat-reinvest', 'Impulsionamento de posts', 250, '2026-04-16'),
-  t('cat-outros-loja', 'Frete dos envios', 130, '2026-04-21'),
+  t('cat-reinvest', 'Impulsionamento de posts', 460, '2026-04-16'),
+  t('cat-outros-loja', 'Fotos profissionais dos produtos', 380, '2026-04-13'),
+  t('cat-outros-loja', 'Frete dos envios', 150, '2026-04-21'),
+  // Pessoal
   t('cat-aluguel', 'Aluguel da loja', 1250, '2026-04-05', true),
-  t('cat-convenio', 'Plano de saude', 460, '2026-04-08', true),
-  t('cat-contas', 'Luz e agua', 290, '2026-04-12', true),
-  t('cat-outros-pessoal', 'Mercado e farmacia', 610, '2026-04-15'),
+  t('cat-convenio', 'Plano de saúde', 460, '2026-04-08', true),
+  t('cat-contas', 'Luz e água', 290, '2026-04-12', true),
+  t('cat-outros-pessoal', 'Mercado e farmácia', 610, '2026-04-15'),
 
   // ===================== Maio / 2026 =====================
-  t('cat-vendas', 'Camisa Brasil 1970 (Pele)', 720, '2026-05-03'),
-  t('cat-vendas', 'Camisa Holanda 1988', 460, '2026-05-08'),
-  t('cat-vendas', 'Camisa Flamengo 1983', 540, '2026-05-13'),
-  t('cat-vendas', 'Camisa Cruzeiro anos 90', 250, '2026-05-16'),
-  t('cat-outras-loja', 'Venda de poster antigo', 150, '2026-05-11'),
-  t('cat-lotes', 'Lote de 6 camisas de selecoes', 1350, '2026-05-02'),
-  t('cat-embalagem', 'Embalagens', 150, '2026-05-06'),
+  // Loja: entradas R$ 2.730 · saídas R$ 3.390
+  t('cat-vendas', 'Camisa Flamengo 1995 Centenário', 720, '2026-05-03'),
+  t('cat-vendas', 'Camisa Barcelona 1992 Dream Team', 540, '2026-05-08'),
+  t('cat-vendas', 'Camisa Brasil 1982', 480, '2026-05-12'),
+  t('cat-vendas', 'Camisa Santos 1968 Pelé', 610, '2026-05-15'),
+  t('cat-vendas', 'Camisa Cruzeiro anos 90', 250, '2026-05-17'),
+  t('cat-outras-loja', 'Venda de álbum de figurinhas', 130, '2026-05-11'),
+  t('cat-lotes', 'Lote de 10 camisas raras', 2100, '2026-05-02'),
+  t('cat-embalagem', 'Embalagens', 160, '2026-05-06'),
   t('cat-internet', 'Mensalidade internet da loja', 120, '2026-05-09', true),
-  t('cat-reinvest', 'Trafego pago / anuncios', 220, '2026-05-14'),
-  t('cat-outros-loja', 'Frete dos envios', 105, '2026-05-15'),
+  t('cat-reinvest', 'Tráfego pago / anúncios', 440, '2026-05-14'),
+  t('cat-outros-loja', 'Banner e divulgação', 450, '2026-05-10'),
+  t('cat-outros-loja', 'Frete dos envios', 120, '2026-05-15'),
+  // Pessoal
   t('cat-aluguel', 'Aluguel da loja', 1250, '2026-05-05', true),
-  t('cat-convenio', 'Plano de saude', 460, '2026-05-08', true),
-  t('cat-contas', 'Luz e agua', 295, '2026-05-12', true),
+  t('cat-convenio', 'Plano de saúde', 460, '2026-05-08', true),
+  t('cat-contas', 'Luz e água', 295, '2026-05-12', true),
   t('cat-outros-pessoal', 'Compras de mercado', 470, '2026-05-15'),
 ];

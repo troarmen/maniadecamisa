@@ -31,6 +31,7 @@ import type {
 import SummaryCards from '../components/SummaryCards';
 import CategoryChart from '../components/CategoryChart';
 import TrendChart from '../components/TrendChart';
+import BreakevenChart from '../components/BreakevenChart';
 import TransactionList from '../components/TransactionList';
 import TransactionForm from '../components/TransactionForm';
 import CategoryManager from '../components/CategoryManager';
@@ -74,7 +75,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
       setTransactions(txs);
     } catch {
       setLoadError(
-        'Nao foi possivel carregar os dados. Verifique se o schema.sql ' +
+        'Não foi possível carregar os dados. Verifique se o schema.sql ' +
           'foi executado no Supabase.',
       );
     }
@@ -115,7 +116,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
     return { income, expense };
   }, [scopedTx, catById]);
 
-  // ----- Acoes -----
+  // ----- Ações -----
   function openNewTx() {
     setEditingTx(null);
     setTxModalOpen(true);
@@ -126,12 +127,12 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
   }
 
   async function handleDeleteTx(t: Transaction) {
-    if (!window.confirm(`Excluir o lancamento "${t.description}"?`)) return;
+    if (!window.confirm(`Excluir o lançamento "${t.description}"?`)) return;
     try {
       await repo.deleteTransaction(t.id);
       loadData();
     } catch {
-      window.alert('Nao foi possivel excluir o lancamento.');
+      window.alert('Não foi possível excluir o lançamento.');
     }
   }
 
@@ -148,7 +149,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
 
     if (candidates.length === 0) {
       window.alert(
-        `Nao ha custos fixos em ${monthLabel(prev)} para repetir.`,
+        `Não há custos fixos em ${monthLabel(prev)} para repetir.`,
       );
       return;
     }
@@ -159,8 +160,8 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
     if (
       alreadyHasFixed &&
       !window.confirm(
-        'Ja existem custos fixos neste mes. Repetir mesmo assim? ' +
-          'Isso pode gerar lancamentos duplicados.',
+        'Já existem custos fixos neste mês. Repetir mesmo assim? ' +
+          'Isso pode gerar lançamentos duplicados.',
       )
     ) {
       return;
@@ -182,7 +183,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
         `${rows.length} custo(s) fixo(s) copiado(s) para ${monthLabel(month)}.`,
       );
     } catch {
-      window.alert('Nao foi possivel repetir os custos fixos.');
+      window.alert('Não foi possível repetir os custos fixos.');
     } finally {
       setRepeating(false);
     }
@@ -200,7 +201,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
 
   return (
     <div className="min-h-screen pb-12">
-      {/* ---------- Cabecalho ---------- */}
+      {/* ---------- Cabeçalho ---------- */}
       <header className="bg-gradient-to-r from-brand-600 to-brand-400 text-white shadow-card">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
           <div className="flex items-center gap-3">
@@ -225,12 +226,12 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
               <span className="hidden sm:inline">Categorias</span>
             </button>
             <span className="hidden max-w-[180px] truncate text-sm text-brand-100 md:inline">
-              {demo ? 'Modo demonstracao' : user?.email}
+              {demo ? 'Modo demonstração' : user?.email}
             </span>
             <button
               type="button"
               onClick={handleSignOut}
-              aria-label={demo ? 'Sair da demonstracao' : 'Sair'}
+              aria-label={demo ? 'Sair da demonstração' : 'Sair'}
               className="inline-flex items-center gap-2 rounded-xl bg-white/15 px-3 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/25"
             >
               <LogOut className="h-4 w-4" />
@@ -247,8 +248,8 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
           <div className="flex items-start gap-2 rounded-xl bg-brand-100 px-4 py-3 text-sm text-brand-800">
             <Sparkles className="mt-0.5 h-4 w-4 shrink-0" />
             <span>
-              <strong>Modo demonstracao.</strong> Os dados sao ficticios e
-              servem apenas para conhecer a plataforma — nada e salvo de
+              <strong>Modo demonstração.</strong> Os dados são fictícios e
+              servem apenas para conhecer a plataforma — nada é salvo de
               verdade.
             </span>
           </div>
@@ -262,12 +263,12 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
 
         {/* ---------- Barra de controles ---------- */}
         <div className="card flex flex-wrap items-center justify-between gap-3 p-3">
-          {/* Seletor de mes */}
+          {/* Seletor de mês */}
           <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
             <button
               type="button"
               onClick={() => setMonth((m) => addMonths(m, -1))}
-              aria-label="Mes anterior"
+              aria-label="Mês anterior"
               className="rounded-lg p-1.5 text-slate-500 transition hover:bg-white hover:text-brand-600"
             >
               <ChevronLeft className="h-5 w-5" />
@@ -279,14 +280,14 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
             <button
               type="button"
               onClick={() => setMonth((m) => addMonths(m, 1))}
-              aria-label="Proximo mes"
+              aria-label="Próximo mês"
               className="rounded-lg p-1.5 text-slate-500 transition hover:bg-white hover:text-brand-600"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
           </div>
 
-          {/* Abas de ambito */}
+          {/* Abas de âmbito */}
           <div className="flex rounded-xl bg-slate-100 p-1">
             {SCOPE_TABS.map((tab) => (
               <button
@@ -304,13 +305,13 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
             ))}
           </div>
 
-          {/* Acoes */}
+          {/* Ações */}
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={repeatFixed}
               disabled={repeating}
-              title="Copiar os custos fixos do mes anterior para este mes"
+              title="Copiar os custos fixos do mês anterior para este mês"
               className="btn-ghost"
             >
               {repeating ? (
@@ -322,7 +323,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
             </button>
             <button type="button" onClick={openNewTx} className="btn-primary">
               <Plus className="h-4 w-4" />
-              Novo lancamento
+              Novo lançamento
             </button>
           </div>
         </div>
@@ -342,6 +343,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
               scope={scope}
               anchorMonth={month}
             />
+            <BreakevenChart transactions={transactions} catById={catById} />
             <TransactionList
               transactions={scopedTx}
               catById={catById}

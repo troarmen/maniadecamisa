@@ -50,17 +50,17 @@ export default function Login({ onEnterDemo }: LoginProps) {
         if (error) {
           setError(error.message);
         } else if (!data.session) {
-          // Confirmacao de e-mail ativada no Supabase.
+          // Confirmação de e-mail ativada no Supabase.
           setInfo(
             'Conta criada! Verifique seu e-mail para confirmar o cadastro e ' +
-              'depois faca login.',
+              'depois faça login.',
           );
           setMode('signin');
         }
-        // Se data.session existir, o AuthContext ja entra automaticamente.
+        // Se data.session existir, o AuthContext já entra automaticamente.
       }
     } catch {
-      setError('Nao foi possivel conectar. Tente novamente.');
+      setError('Não foi possível conectar. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -82,15 +82,15 @@ export default function Login({ onEnterDemo }: LoginProps) {
           </div>
         </div>
         <p className="max-w-md text-brand-50/90">
-          Organize as entradas e saidas da loja, separe o que e gasto pessoal e
-          enxergue o lucro de verdade — tudo em graficos simples de entender.
+          Organize as entradas e saídas da loja, separe o que é gasto pessoal e
+          enxergue o lucro de verdade — tudo em gráficos simples de entender.
         </p>
         <ul className="space-y-2 text-sm text-brand-50/90">
           <li className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" /> Faturamento, custos e lucro do mes
+            <TrendingUp className="h-4 w-4" /> Faturamento, custos e lucro do mês
           </li>
           <li className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" /> Graficos de pizza e de barras
+            <TrendingUp className="h-4 w-4" /> Gráficos de pizza e de barras
           </li>
           <li className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" /> Loja e pessoal sempre separados
@@ -98,7 +98,7 @@ export default function Login({ onEnterDemo }: LoginProps) {
         </ul>
       </div>
 
-      {/* Lado direito - formulario */}
+      {/* Lado direito - formulário */}
       <div className="flex items-center justify-center px-6 py-12 lg:flex-1">
         <div className="card w-full max-w-sm p-8">
           <h2 className="text-xl font-bold text-slate-800">
@@ -123,7 +123,7 @@ export default function Login({ onEnterDemo }: LoginProps) {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="voce@exemplo.com"
+                  placeholder="nome@exemplo.com"
                   className="input-field pl-9"
                 />
               </div>
@@ -143,7 +143,7 @@ export default function Login({ onEnterDemo }: LoginProps) {
                   }
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Minimo de 6 caracteres"
+                  placeholder="Mínimo de 6 caracteres"
                   className="input-field pl-9"
                 />
               </div>
@@ -169,7 +169,7 @@ export default function Login({ onEnterDemo }: LoginProps) {
           <p className="mt-6 text-center text-sm text-slate-500">
             {mode === 'signin' ? (
               <>
-                Ainda nao tem conta?{' '}
+                Ainda não tem conta?{' '}
                 <button
                   type="button"
                   onClick={() => switchMode('signup')}
@@ -180,7 +180,7 @@ export default function Login({ onEnterDemo }: LoginProps) {
               </>
             ) : (
               <>
-                Ja tem conta?{' '}
+                Já tem conta?{' '}
                 <button
                   type="button"
                   onClick={() => switchMode('signin')}
@@ -203,7 +203,7 @@ export default function Login({ onEnterDemo }: LoginProps) {
             className="btn-ghost mt-3 w-full"
           >
             <Sparkles className="h-4 w-4 text-brand-500" />
-            Explorar demonstracao
+            Explorar demonstração
           </button>
         </div>
       </div>

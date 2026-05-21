@@ -19,7 +19,7 @@ function FullScreen({ children }: { children: React.ReactNode }) {
 export default function App() {
   const { session, loading } = useAuth();
 
-  // Modo demonstracao: roda com dados ficticios, sem precisar do Supabase.
+  // Modo demonstração: roda com dados fictícios, sem precisar do Supabase.
   const [demo, setDemo] = useState<boolean>(() => {
     const on = sessionStorage.getItem(DEMO_KEY) === '1';
     if (on) repo.setDemoMode(true);
@@ -42,7 +42,7 @@ export default function App() {
     return <Dashboard demo onExitDemo={exitDemo} />;
   }
 
-  // Aviso caso o .env ainda nao tenha sido preenchido.
+  // Aviso caso o .env ainda não tenha sido preenchido.
   if (!supabaseConfigured) {
     return (
       <FullScreen>
@@ -51,7 +51,7 @@ export default function App() {
             <AlertTriangle className="h-7 w-7 text-amber-600" />
           </div>
           <h1 className="text-lg font-bold text-slate-800">
-            Configuracao pendente
+            Configuração pendente
           </h1>
           <p className="mt-2 text-sm text-slate-500">
             Crie um arquivo <code className="rounded bg-slate-100 px-1">.env</code>{' '}
@@ -68,10 +68,10 @@ export default function App() {
             className="btn-primary mt-6 w-full"
           >
             <Sparkles className="h-4 w-4" />
-            Ver demonstracao
+            Ver demonstração
           </button>
           <p className="mt-2 text-xs text-slate-400">
-            A demonstracao usa dados ficticios e nao precisa do Supabase.
+            A demonstração usa dados fictícios e não precisa do Supabase.
           </p>
         </div>
       </FullScreen>
