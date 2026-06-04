@@ -118,11 +118,19 @@ export default function BreakevenChart({
 }: BreakevenChartProps) {
   const { data, labels, breakeven, nReal, suficiente } = useMemo(() => {
     // Agrega entradas e saídas da LOJA por mês.
+    // Meses no futuro (em relação à data real de hoje) são ignorados:
+    // se contivessem apenas custos fixos auto-inseridos, distorceriam
+    // a regressão da tendência.
+    const hoje = new Date();
+    const chaveHoje = `${hoje.getFullYear()}-${String(
+      hoje.getMonth() + 1,
+    ).padStart(2, '0')}`;
     const porMes = new Map<string, { entradas: number; saidas: number }>();
     for (const tx of transactions) {
       const cat = catById[tx.category_id];
       if (!cat || cat.scope !== 'store') continue;
       const chave = tx.date.slice(0, 7);
+      if (chave > chaveHoje) continue;
       const reg = porMes.get(chave) ?? { entradas: 0, saidas: 0 };
       if (cat.kind === 'income') reg.entradas += Number(tx.amount);
       else reg.saidas += Number(tx.amount);
@@ -201,8 +209,8 @@ export default function BreakevenChart({
         Previsão de ponto de equilíbrio
       </h3>
       <p className="text-xs text-slate-400">
-        Entradas e saídas da loja: histórico real (linha cheia) e projeção
-        dos próximos meses (linha tracejada).
+        Entradas e saídas da loja: histórico real até o mês atual (linha
+        cheia) e projeção dos próximos meses (linha tracejada).
       </p>
     </div>
   );
