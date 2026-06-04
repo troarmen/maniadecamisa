@@ -1,0 +1,26 @@
+name: Supabase Heartbeat
+
+# Faz um GET na API REST do Supabase em dias alternados para que o
+# projeto gratuito não seja pausado por inatividade (limite de 7 dias).
+# Roda duas vezes por semana — assim, mesmo se um disparo falhar, o
+# intervalo entre pings continua bem abaixo do limite.
+
+on:
+  schedule:
+    # Toda segunda e quinta às 12:00 UTC (09:00 horário de Brasília).
+    - cron: "0 12 * * 1,4"
+  workflow_dispatch: # permite executar manualmente pela aba "Actions"
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: https://zxobepesdceorpacxoly.supabase.co
+          SUPABASE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          curl --fail -sS \
+            "$SUPABASE_URL/rest/v1/categories?select=id&limit=1" \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY"

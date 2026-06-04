@@ -3,13 +3,10 @@ import {
   Shirt,
   Tags,
   LogOut,
-  ChevronLeft,
-  ChevronRight,
   Plus,
   CopyPlus,
   Loader2,
   AlertTriangle,
-  CalendarDays,
   Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -32,6 +29,7 @@ import SummaryCards from '../components/SummaryCards';
 import CategoryChart from '../components/CategoryChart';
 import TrendChart from '../components/TrendChart';
 import BreakevenChart from '../components/BreakevenChart';
+import MonthPicker from '../components/MonthPicker';
 import TransactionList from '../components/TransactionList';
 import TransactionForm from '../components/TransactionForm';
 import CategoryManager from '../components/CategoryManager';
@@ -264,28 +262,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
         {/* ---------- Barra de controles ---------- */}
         <div className="card flex flex-wrap items-center justify-between gap-3 p-3">
           {/* Seletor de mês */}
-          <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
-            <button
-              type="button"
-              onClick={() => setMonth((m) => addMonths(m, -1))}
-              aria-label="Mês anterior"
-              className="rounded-lg p-1.5 text-slate-500 transition hover:bg-white hover:text-brand-600"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <span className="flex min-w-[150px] items-center justify-center gap-1.5 text-sm font-bold text-slate-700">
-              <CalendarDays className="h-4 w-4 text-brand-500" />
-              {monthLabel(month)}
-            </span>
-            <button
-              type="button"
-              onClick={() => setMonth((m) => addMonths(m, 1))}
-              aria-label="Próximo mês"
-              className="rounded-lg p-1.5 text-slate-500 transition hover:bg-white hover:text-brand-600"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
+          <MonthPicker value={month} onChange={setMonth} />
 
           {/* Abas de âmbito */}
           <div className="flex rounded-xl bg-slate-100 p-1">
