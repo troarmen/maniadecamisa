@@ -8,6 +8,7 @@ import {
   Loader2,
   AlertTriangle,
   Sparkles,
+  Repeat2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -40,6 +41,8 @@ const SCOPE_TABS: { value: ScopeFilter; label: string }[] = [
   { value: 'personal', label: 'Pessoal' },
 ];
 
+const DISMISS_KEY_PREFIX = 'mdc-fixed-dismissed:';
+
 interface DashboardProps {
   demo?: boolean;
   onExitDemo?: () => void;
@@ -60,6 +63,8 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
   const [catModalOpen, setCatModalOpen] = useState(false);
   const [repeating, setRepeating] = useState(false);
+  const [inserting, setInserting] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   // ----- Carregamento de dados -----
   const loadData = useCallback(async () => {
@@ -92,6 +97,13 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
 
   const currentKey = monthKey(month);
 
+  // Quando troca de mês, recupera se o banner já foi dispensado nesse mês.
+  useEffect(() => {
+    const dismissed =
+      localStorage.getItem(`${DISMISS_KEY_PREFIX}${currentKey}`) === '1';
+    setBannerDismissed(dismissed);
+  }, [currentKey]);
+
   const monthTx = useMemo(
     () => transactions.filter((t) => t.date.slice(0, 7) === currentKey),
     [transactions, currentKey],
@@ -113,6 +125,27 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
     }
     return { income, expense };
   }, [scopedTx, catById]);
+
+  // Custos fixos do mês anterior que ainda não foram repetidos neste mês.
+  // Identificamos cada custo pela combinação categoria + descrição.
+  const missingFixed = useMemo<Transaction[]>(() => {
+    const prevKey = monthKey(addMonths(month, -1));
+    const prevFixed = transactions.filter(
+      (t) => t.date.slice(0, 7) === prevKey && t.is_fixed,
+    );
+    if (prevFixed.length === 0) return [];
+
+    const assinatura = (t: Transaction) =>
+      `${t.category_id}::${t.description.trim().toLowerCase()}`;
+
+    const existentes = new Set(
+      transactions
+        .filter((t) => t.date.slice(0, 7) === currentKey)
+        .map(assinatura),
+    );
+
+    return prevFixed.filter((t) => !existentes.has(assinatura(t)));
+  }, [transactions, month, currentKey]);
 
   // ----- Ações -----
   function openNewTx() {
@@ -187,6 +220,32 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
     }
   }
 
+  async function insertMissingFixed() {
+    if (missingFixed.length === 0) return;
+    const rows: TransactionInput[] = missingFixed.map((t) => ({
+      category_id: t.category_id,
+      description: t.description,
+      amount: Number(t.amount),
+      date: moveISOToMonth(t.date, month),
+      is_fixed: true,
+      note: t.note,
+    }));
+    setInserting(true);
+    try {
+      await repo.createManyTransactions(rows, user?.id ?? '');
+      await loadData();
+    } catch {
+      window.alert('Não foi possível inserir os custos fixos.');
+    } finally {
+      setInserting(false);
+    }
+  }
+
+  function dismissBanner() {
+    localStorage.setItem(`${DISMISS_KEY_PREFIX}${currentKey}`, '1');
+    setBannerDismissed(true);
+  }
+
   async function handleSignOut() {
     if (demo) {
       onExitDemo?.();
@@ -196,6 +255,9 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
   }
 
   const defaultFormScope = scope === 'personal' ? 'personal' : 'store';
+
+  const mostrarBannerFixos =
+    !loading && missingFixed.length > 0 && !bannerDismissed;
 
   return (
     <div className="min-h-screen pb-12">
@@ -256,6 +318,56 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
           <div className="flex items-start gap-2 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-700">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
             {loadError}
+          </div>
+        )}
+
+        {/* ---------- Banner: custos fixos não repetidos ---------- */}
+        {mostrarBannerFixos && (
+          <div className="flex flex-wrap items-start justify-between gap-3 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800 ring-1 ring-amber-200">
+            <div className="flex min-w-0 flex-1 items-start gap-2">
+              <Repeat2 className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+              <div className="min-w-0">
+                <p>
+                  <strong>
+                    {missingFixed.length} custo
+                    {missingFixed.length > 1 ? 's' : ''} fixo
+                    {missingFixed.length > 1 ? 's' : ''} do mês anterior
+                  </strong>{' '}
+                  {missingFixed.length > 1 ? 'ainda não foram' : 'ainda não foi'}{' '}
+                  repetido{missingFixed.length > 1 ? 's' : ''} neste mês.
+                </p>
+                <p className="mt-0.5 truncate text-xs text-amber-700">
+                  {missingFixed
+                    .slice(0, 3)
+                    .map((t) => t.description)
+                    .join(', ')}
+                  {missingFixed.length > 3 &&
+                    ` e mais ${missingFixed.length - 3}`}
+                </p>
+              </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={dismissBanner}
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
+              >
+                Dispensar
+              </button>
+              <button
+                type="button"
+                onClick={insertMissingFixed}
+                disabled={inserting}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-700 disabled:opacity-60"
+              >
+                {inserting ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Plus className="h-3.5 w-3.5" />
+                )}
+                Inserir agora
+              </button>
+            </div>
           </div>
         )}
 
