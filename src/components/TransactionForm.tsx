@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { Loader2, Store, User, ArrowUp, ArrowDown, Info } from 'lucide-react';
+import {
+  Loader2,
+  Store,
+  User,
+  ArrowUp,
+  ArrowDown,
+  Info,
+  CreditCard,
+} from 'lucide-react';
 import Modal from './Modal';
 import * as repo from '../lib/repo';
 import { parseAmount } from '../lib/format';
@@ -7,6 +15,7 @@ import { todayISO } from '../lib/date';
 import type {
   Category,
   Kind,
+  PaymentMethod,
   Scope,
   Transaction,
   TransactionInput,
@@ -17,6 +26,7 @@ interface TransactionFormProps {
   onClose: () => void;
   onSaved: () => void;
   categories: Category[];
+  paymentMethods: PaymentMethod[];
   editing: Transaction | null;
   userId: string;
   defaultScope: Scope;
@@ -27,6 +37,7 @@ export default function TransactionForm({
   onClose,
   onSaved,
   categories,
+  paymentMethods,
   editing,
   userId,
   defaultScope,
@@ -34,6 +45,7 @@ export default function TransactionForm({
   const [scope, setScope] = useState<Scope>('store');
   const [kind, setKind] = useState<Kind>('expense');
   const [categoryId, setCategoryId] = useState('');
+  const [paymentMethodId, setPaymentMethodId] = useState('');
   const [description, setDescription] = useState('');
   const [amountText, setAmountText] = useState('');
   const [date, setDate] = useState(todayISO());
@@ -51,6 +63,7 @@ export default function TransactionForm({
       setScope(cat?.scope ?? defaultScope);
       setKind(cat?.kind ?? 'expense');
       setCategoryId(editing.category_id);
+      setPaymentMethodId(editing.payment_method_id ?? '');
       setDescription(editing.description);
       setAmountText(String(editing.amount).replace('.', ','));
       setDate(editing.date);
@@ -60,6 +73,7 @@ export default function TransactionForm({
       setScope(defaultScope);
       setKind('expense');
       setCategoryId('');
+      setPaymentMethodId('');
       setDescription('');
       setAmountText('');
       setDate(todayISO());
@@ -107,6 +121,7 @@ export default function TransactionForm({
 
     const payload: TransactionInput = {
       category_id: categoryId,
+      payment_method_id: paymentMethodId || null,
       description: description.trim(),
       amount,
       date,
@@ -225,6 +240,36 @@ export default function TransactionForm({
             placeholder="Ex.: Camisetas anos 80"
             className="input-field"
           />
+        </div>
+
+        {/* Meio de pagamento */}
+        <div>
+          <label className="mb-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-700">
+            <CreditCard className="h-4 w-4 text-slate-400" />
+            Meio de pagamento{' '}
+            <span className="font-normal text-slate-400">(opcional)</span>
+          </label>
+          {paymentMethods.length === 0 ? (
+            <p className="flex items-start gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-xs text-slate-500">
+              <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              Nenhum meio cadastrado. Cadastre seus cartões e formas de
+              pagamento no botão "Meios" do painel.
+            </p>
+          ) : (
+            <select
+              value={paymentMethodId}
+              onChange={(e) => setPaymentMethodId(e.target.value)}
+              className="input-field"
+            >
+              <option value="">Sem meio definido</option>
+              {paymentMethods.map((pm) => (
+                <option key={pm.id} value={pm.id}>
+                  {pm.name}
+                  {pm.last_four ? ` (•••• ${pm.last_four})` : ''}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Valor e Data */}

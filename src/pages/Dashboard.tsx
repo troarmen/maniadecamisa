@@ -9,6 +9,7 @@ import {
   AlertTriangle,
   Sparkles,
   Repeat2,
+  CreditCard,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -22,18 +23,21 @@ import {
 } from '../lib/date';
 import type {
   Category,
+  PaymentMethod,
   ScopeFilter,
   Transaction,
   TransactionInput,
 } from '../types';
 import SummaryCards from '../components/SummaryCards';
 import CategoryChart from '../components/CategoryChart';
+import PaymentMethodChart from '../components/PaymentMethodChart';
 import TrendChart from '../components/TrendChart';
 import BreakevenChart from '../components/BreakevenChart';
 import MonthPicker from '../components/MonthPicker';
 import TransactionList from '../components/TransactionList';
 import TransactionForm from '../components/TransactionForm';
 import CategoryManager from '../components/CategoryManager';
+import PaymentMethodManager from '../components/PaymentMethodManager';
 
 const SCOPE_TABS: { value: ScopeFilter; label: string }[] = [
   { value: 'all', label: 'Geral' },
@@ -52,6 +56,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
   const { user } = useAuth();
 
   const [categories, setCategories] = useState<Category[]>([]);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -62,6 +67,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
   const [txModalOpen, setTxModalOpen] = useState(false);
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
   const [catModalOpen, setCatModalOpen] = useState(false);
+  const [pmModalOpen, setPmModalOpen] = useState(false);
   const [repeating, setRepeating] = useState(false);
   const [inserting, setInserting] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
@@ -70,11 +76,13 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
   const loadData = useCallback(async () => {
     setLoadError('');
     try {
-      const [cats, txs] = await Promise.all([
+      const [cats, pms, txs] = await Promise.all([
         repo.fetchCategories(),
+        repo.fetchPaymentMethods(),
         repo.fetchTransactions(),
       ]);
       setCategories(cats);
+      setPaymentMethods(pms);
       setTransactions(txs);
     } catch {
       setLoadError(
@@ -93,6 +101,11 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
   const catById = useMemo(
     () => Object.fromEntries(categories.map((c) => [c.id, c])),
     [categories],
+  );
+
+  const pmById = useMemo(
+    () => Object.fromEntries(paymentMethods.map((p) => [p.id, p])),
+    [paymentMethods],
   );
 
   const currentKey = monthKey(month);
@@ -201,6 +214,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
     setRepeating(true);
     const rows: TransactionInput[] = candidates.map((t) => ({
       category_id: t.category_id,
+      payment_method_id: t.payment_method_id,
       description: t.description,
       amount: Number(t.amount),
       date: moveISOToMonth(t.date, month),
@@ -224,6 +238,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
     if (missingFixed.length === 0) return;
     const rows: TransactionInput[] = missingFixed.map((t) => ({
       category_id: t.category_id,
+      payment_method_id: t.payment_method_id,
       description: t.description,
       amount: Number(t.amount),
       date: moveISOToMonth(t.date, month),
@@ -279,13 +294,21 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={() => setPmModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl bg-white/15 px-3 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/25"
+            >
+              <CreditCard className="h-4 w-4" />
+              <span className="hidden md:inline">Meios</span>
+            </button>
+            <button
+              type="button"
               onClick={() => setCatModalOpen(true)}
               className="inline-flex items-center gap-2 rounded-xl bg-white/15 px-3 py-2 text-sm font-semibold backdrop-blur transition hover:bg-white/25"
             >
               <Tags className="h-4 w-4" />
-              <span className="hidden sm:inline">Categorias</span>
+              <span className="hidden md:inline">Categorias</span>
             </button>
-            <span className="hidden max-w-[180px] truncate text-sm text-brand-100 md:inline">
+            <span className="hidden max-w-[160px] truncate text-sm text-brand-100 lg:inline">
               {demo ? 'Modo demonstração' : user?.email}
             </span>
             <button
@@ -426,6 +449,11 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
           <>
             <SummaryCards income={income} expense={expense} scope={scope} />
             <CategoryChart transactions={scopedTx} catById={catById} />
+            <PaymentMethodChart
+              transactions={scopedTx}
+              catById={catById}
+              pmById={pmById}
+            />
             <TrendChart
               transactions={transactions}
               catById={catById}
@@ -436,6 +464,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
             <TransactionList
               transactions={scopedTx}
               catById={catById}
+              pmById={pmById}
               onEdit={openEditTx}
               onDelete={handleDeleteTx}
               onAdd={openNewTx}
@@ -450,6 +479,7 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
         onClose={() => setTxModalOpen(false)}
         onSaved={loadData}
         categories={categories}
+        paymentMethods={paymentMethods}
         editing={editingTx}
         userId={user?.id ?? ''}
         defaultScope={defaultFormScope}
@@ -459,6 +489,13 @@ export default function Dashboard({ demo = false, onExitDemo }: DashboardProps) 
         onClose={() => setCatModalOpen(false)}
         onChanged={loadData}
         categories={categories}
+        userId={user?.id ?? ''}
+      />
+      <PaymentMethodManager
+        open={pmModalOpen}
+        onClose={() => setPmModalOpen(false)}
+        onChanged={loadData}
+        paymentMethods={paymentMethods}
         userId={user?.id ?? ''}
       />
     </div>

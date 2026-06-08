@@ -1,20 +1,27 @@
 // Camada de acesso a dados.
 //
-// Em modo normal, fala com o Supabase. Em "modo demonstracao", opera
-// sobre dados ficticios em memoria — assim a plataforma pode ser
-// conhecida sem nenhuma configuracao de back-end.
+// Em modo normal, fala com o Supabase. Em "modo demonstração", opera
+// sobre dados fictícios em memória — assim a plataforma pode ser
+// conhecida sem nenhuma configuração de back-end.
 
 import { supabase } from './supabase';
-import { demoCategories, demoTransactions } from './demoData';
+import {
+  demoCategories,
+  demoPaymentMethods,
+  demoTransactions,
+} from './demoData';
 import type {
   Category,
   CategoryInput,
+  PaymentMethod,
+  PaymentMethodInput,
   Transaction,
   TransactionInput,
 } from '../types';
 
 let demo = false;
 let memCategories: Category[] = [];
+let memPaymentMethods: PaymentMethod[] = [];
 let memTransactions: Transaction[] = [];
 let counter = 0;
 
@@ -27,15 +34,17 @@ export function isDemoMode(): boolean {
   return demo;
 }
 
-/** Liga/desliga o modo demonstracao. Ao ligar, recarrega os dados de exemplo. */
+/** Liga/desliga o modo demonstração. Ao ligar, recarrega os dados de exemplo. */
 export function setDemoMode(on: boolean): void {
   if (on === demo) return;
   demo = on;
   if (on) {
     memCategories = demoCategories.map((c) => ({ ...c }));
+    memPaymentMethods = demoPaymentMethods.map((p) => ({ ...p }));
     memTransactions = demoTransactions.map((t) => ({ ...t }));
   } else {
     memCategories = [];
+    memPaymentMethods = [];
     memTransactions = [];
   }
 }
@@ -56,6 +65,20 @@ export async function fetchCategories(): Promise<Category[]> {
   return (data ?? []) as Category[];
 }
 
+export async function fetchPaymentMethods(): Promise<PaymentMethod[]> {
+  if (demo) {
+    return [...memPaymentMethods].sort((a, b) =>
+      a.name.localeCompare(b.name, 'pt-BR'),
+    );
+  }
+  const { data, error } = await supabase
+    .from('payment_methods')
+    .select('*')
+    .order('name');
+  if (error) throw error;
+  return (data ?? []) as PaymentMethod[];
+}
+
 export async function fetchTransactions(): Promise<Transaction[]> {
   if (demo) {
     return [...memTransactions].sort((a, b) => (a.date < b.date ? 1 : -1));
@@ -68,7 +91,7 @@ export async function fetchTransactions(): Promise<Transaction[]> {
   return (data ?? []) as Transaction[];
 }
 
-// ----------------------------------------------------------- Lancamentos
+// ----------------------------------------------------------- Lançamentos
 
 export async function createTransaction(
   input: TransactionInput,
@@ -174,11 +197,65 @@ export async function updateCategory(
 export async function deleteCategory(id: string): Promise<void> {
   if (demo) {
     if (memTransactions.some((t) => t.category_id === id)) {
-      throw new Error('Categoria em uso por lancamentos.');
+      throw new Error('Categoria em uso por lançamentos.');
     }
     memCategories = memCategories.filter((c) => c.id !== id);
     return;
   }
   const { error } = await supabase.from('categories').delete().eq('id', id);
+  if (error) throw error;
+}
+
+// -------------------------------------------------------- Meios de pagamento
+
+export async function createPaymentMethod(
+  input: PaymentMethodInput,
+  userId: string,
+): Promise<void> {
+  if (demo) {
+    memPaymentMethods.push({
+      id: genId('demo-pm'),
+      user_id: 'demo-user',
+      created_at: new Date().toISOString(),
+      ...input,
+    });
+    return;
+  }
+  const { error } = await supabase
+    .from('payment_methods')
+    .insert({ ...input, user_id: userId });
+  if (error) throw error;
+}
+
+export async function updatePaymentMethod(
+  id: string,
+  input: PaymentMethodInput,
+): Promise<void> {
+  if (demo) {
+    const idx = memPaymentMethods.findIndex((p) => p.id === id);
+    if (idx >= 0) memPaymentMethods[idx] = { ...memPaymentMethods[idx], ...input };
+    return;
+  }
+  const { error } = await supabase
+    .from('payment_methods')
+    .update(input)
+    .eq('id', id);
+  if (error) throw error;
+}
+
+export async function deletePaymentMethod(id: string): Promise<void> {
+  if (demo) {
+    memPaymentMethods = memPaymentMethods.filter((p) => p.id !== id);
+    // Mantém os lançamentos existentes, mas tira a referência ao meio
+    // (mesmo comportamento de "on delete set null" no Postgres).
+    memTransactions = memTransactions.map((t) =>
+      t.payment_method_id === id ? { ...t, payment_method_id: null } : t,
+    );
+    return;
+  }
+  const { error } = await supabase
+    .from('payment_methods')
+    .delete()
+    .eq('id', id);
   if (error) throw error;
 }

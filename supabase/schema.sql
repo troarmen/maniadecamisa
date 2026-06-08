@@ -97,3 +97,32 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row
   execute function public.seed_default_categories();
+
+-- ============================================================
+--  Meios de pagamento (cartoes, PIX, dinheiro, etc.)
+-- ============================================================
+create table if not exists public.payment_methods (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references auth.users (id) on delete cascade,
+  name        text not null,
+  last_four   text check (last_four is null or last_four ~ '^[0-9]{4}$'),
+  color       text not null default '#1AA5EC',
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists idx_payment_methods_user on public.payment_methods (user_id);
+
+alter table public.payment_methods enable row level security;
+
+drop policy if exists "meios de pagamento do proprio usuario" on public.payment_methods;
+create policy "meios de pagamento do proprio usuario" on public.payment_methods
+  for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+-- Vincula meio de pagamento aos lancamentos (opcional).
+-- on delete set null: se um meio for excluido, os lancamentos historicos
+-- continuam existindo, so perdem a referencia.
+alter table public.transactions
+  add column if not exists payment_method_id uuid
+    references public.payment_methods (id) on delete set null;

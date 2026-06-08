@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
-import { Pencil, Trash2, Plus, Pin, Receipt } from 'lucide-react';
+import { Pencil, Trash2, Plus, Pin, Receipt, CreditCard } from 'lucide-react';
 import { formatBRL } from '../lib/format';
 import { formatDateBR } from '../lib/date';
-import type { Category, Transaction } from '../types';
+import type { Category, PaymentMethod, Transaction } from '../types';
 
 interface TransactionListProps {
   transactions: Transaction[];
   catById: Record<string, Category>;
+  pmById: Record<string, PaymentMethod>;
   onEdit: (t: Transaction) => void;
   onDelete: (t: Transaction) => void;
   onAdd: () => void;
@@ -15,6 +16,7 @@ interface TransactionListProps {
 export default function TransactionList({
   transactions,
   catById,
+  pmById,
   onEdit,
   onDelete,
   onAdd,
@@ -65,6 +67,9 @@ export default function TransactionList({
         <ul className="divide-y divide-slate-100">
           {sorted.map((t) => {
             const cat = catById[t.category_id];
+            const pm = t.payment_method_id
+              ? pmById[t.payment_method_id]
+              : null;
             const isIncome = cat?.kind === 'income';
             return (
               <li
@@ -92,6 +97,23 @@ export default function TransactionList({
                   <p className="truncate text-xs text-slate-400">
                     {cat?.name ?? 'Sem categoria'} ·{' '}
                     {cat?.scope === 'personal' ? 'Pessoal' : 'Loja'}
+                    {pm && (
+                      <>
+                        {' · '}
+                        <span className="inline-flex items-center gap-1">
+                          <CreditCard
+                            className="h-3 w-3"
+                            style={{ color: pm.color }}
+                          />
+                          {pm.name}
+                          {pm.last_four && (
+                            <span className="tabular-nums">
+                              {' '}•••• {pm.last_four}
+                            </span>
+                          )}
+                        </span>
+                      </>
+                    )}
                     {t.note ? ` · ${t.note}` : ''}
                   </p>
                 </div>
